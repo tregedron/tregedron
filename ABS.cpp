@@ -74,7 +74,7 @@ int main()
 	double* Xcoor = new double[partnum + 1];
 	double* Ycoor = new double[partnum + 1];
 	double* Zcoor = new double[partnum + 1];
-	int n = ceil(pow(partnum, 1.0 / 3)); // количество узлов в сетке на грань куба
+	int n = ceil(pow(partnum, 1.0 / 3)); // ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГ® ГіГ§Г«Г®Гў Гў Г±ГҐГІГЄГҐ Г­Г  ГЈГ°Г Г­Гј ГЄГіГЎГ 
 	double griddist = length / (n);
 	// cout << griddist << endl;
 	
@@ -96,19 +96,19 @@ int main()
 	for (int stepcount = 1; stepcount <= steps; stepcount++)
 	{
 		int r; 
-		r = rand() % int (partnum) + 1; //выбрали частицу
+		r = rand() % int (partnum) + 1; //ГўГ»ГЎГ°Г Г«ГЁ Г·Г Г±ГІГЁГ¶Гі
 		
 
 		double Xcoorrem, Ycoorrem, Zcoorrem;
-		Xcoorrem = Xcoor[r]; Ycoorrem = Ycoor[r]; Zcoorrem = Zcoor[r]; //запомнили положение частицы
+		Xcoorrem = Xcoor[r]; Ycoorrem = Ycoor[r]; Zcoorrem = Zcoor[r]; //Г§Г ГЇГ®Г¬Г­ГЁГ«ГЁ ГЇГ®Г«Г®Г¦ГҐГ­ГЁГҐ Г·Г Г±ГІГЁГ¶Г»
 		
 		Xcoor[r] = jump(Xcoor[r], dcoor, length);
-		Ycoor[r] = jump(Ycoor[r], dcoor, length); //прыжок частицей
+		Ycoor[r] = jump(Ycoor[r], dcoor, length); //ГЇГ°Г»Г¦Г®ГЄ Г·Г Г±ГІГЁГ¶ГҐГ©
 		Zcoor[r] = jump(Zcoor[r], dcoor, length);
 		
-		bool t=true; //флаг принятия шага
+		bool t=true; //ГґГ«Г ГЈ ГЇГ°ГЁГ­ГїГІГЁГї ГёГ ГЈГ 
 		
-		for (int k = 1; k <= partnum; k++) //проверка удалённости других частиц
+		for (int k = 1; k <= partnum; k++) //ГЇГ°Г®ГўГҐГ°ГЄГ  ГіГ¤Г Г«ВёГ­Г­Г®Г±ГІГЁ Г¤Г°ГіГЈГЁГµ Г·Г Г±ГІГЁГ¶
 		{	
 			//cout << "step=" << stepcount << " part1=" << r << " part2=" << k << endl;
 			if (k == r)
@@ -128,7 +128,7 @@ int main()
 			}
 		}
 
-		if (t == false) //принятие или непринятие шага
+		if (t == false) //ГЇГ°ГЁГ­ГїГІГЁГҐ ГЁГ«ГЁ Г­ГҐГЇГ°ГЁГ­ГїГІГЁГҐ ГёГ ГЈГ 
 		{
 			badsteps = badsteps + 1;
 			Xcoor[r] = Xcoorrem;
