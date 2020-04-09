@@ -8,7 +8,7 @@ using namespace std;
 
 const double pi = 3.1415926535897932;
 
-double* read(char x[10])
+double* read(char x[10]) //прочтение файла конфигурации
 {
 	double conf[7];
 	ifstream fin(x);
@@ -17,7 +17,7 @@ double* read(char x[10])
 	return conf;
 }
 
-double dist(double x1, double x2, double y1, double y2, double z1, double z2, double length)
+double dist(double x1, double x2, double y1, double y2, double z1, double z2, double length) //дистанция между частицами
 {
 	double r;
 	double delta_x = abs(x2 - x1), delta_y = abs(y2 - y1), delta_z = abs(z2 - z1);
@@ -37,7 +37,7 @@ double dist(double x1, double x2, double y1, double y2, double z1, double z2, do
 	return r;
 }
 
-double raspred(double n, double i, double delta, double norm)
+double raspred(double n, double i, double delta, double norm) //функция для расчёта по локальной плотности функции распределения
 {
 	double gr = 0; 
 	double R = (i + 0.5) * delta;
@@ -71,7 +71,7 @@ int main()
 	{
 		g[i] = 0; gmass[i] = 0;
 	}
-	for (int i = 0; i < shots; i++)
+	for (int i = 0; i < shots; i++) //прочтение файла положений
 	{
 		for (int k = 1; k <= partnum + 2; k++)
 		{
@@ -96,9 +96,9 @@ int main()
 				Zcoor[k - 3] = stod(lineZ);
 			}
 		}
-		if (i >= fshots)
+		if (i >= fshots) //отсечение первых положений 
 		{
-			for (int j = 0; j < partnum; j++)
+			for (int j = 0; j < partnum; j++) //пробегание по всем парам частиц и внесение каждой пары в определённый слой
 			{
 				for (int l = j + 1; l < partnum; l++)
 				{
@@ -113,7 +113,7 @@ int main()
 			}
 		}
 	}
-	for (int i = 0; i < sloi; i++)
+	for (int i = 0; i < sloi; i++) //расчёт функции распределения и вывод в файл функции распределения
 	{
 		g[i] = g[i] / (shots - fshots);
 		g[i] = raspred(g[i], i, delta, pairdensity);
