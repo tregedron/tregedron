@@ -6,7 +6,7 @@
 using namespace std;
 
 
-double* read(char x[10])
+double* read(char x[10]) // функция прочтения файла конфигурации
 {
 	double conf[6]; 
 	ifstream fin(x);
@@ -16,7 +16,7 @@ double* read(char x[10])
 }
 
 
-bool distcheck(double x1, double x2, double y1, double y2, double z1, double z2, double molrad, double length)
+bool distcheck(double x1, double x2, double y1, double y2, double z1, double z2, double molrad, double length) //расчёт растояний между частицами и ответ на вопрос: не слишком ли близко прыгнула одна частица к другой
 {
 	double r;
 	double delta_x = abs(x2-x1), delta_y = abs(y2 - y1), delta_z = abs(z2 - z1);
@@ -43,7 +43,7 @@ bool distcheck(double x1, double x2, double y1, double y2, double z1, double z2,
 	}
 }
 
-double jump(double coor,double dcoor, double length)
+double jump(double coor,double dcoor, double length) //функция прыжка частицей, применяется покоординатно
 {
 	coor = coor + (rand() * 2.0 / RAND_MAX) * dcoor - dcoor;
 	if (coor >= length)
@@ -74,11 +74,10 @@ int main()
 	double* Xcoor = new double[partnum + 1];
 	double* Ycoor = new double[partnum + 1];
 	double* Zcoor = new double[partnum + 1];
-	int n = ceil(pow(partnum, 1.0 / 3)); // êîëè÷åñòâî óçëîâ â ñåòêå íà ãðàíü êóáà
+	int n = ceil(pow(partnum, 1.0 / 3)); //создание сетки на кубе
 	double griddist = length / (n);
-	// cout << griddist << endl;
 	
-	for (int i = 1; i <= partnum; i++)
+	for (int i = 1; i <= partnum; i++) //расстановка частиц в начальное полежение (на сетку куба)
 	{
 		Xcoor[i] = griddist * ((i % n));
 		Ycoor[i] = griddist * (((int) (i / n)) % n);
@@ -86,7 +85,7 @@ int main()
 	}
 	ofstream fout;
 	fout.open("1.XMOL");
-	fout << partnum << endl;
+	fout << partnum << endl; // вывод в файл начального положения
 	fout << "STEP=" << 0 << endl;
 	for (int i = 1; i <= partnum; i++)
 	{
@@ -96,21 +95,21 @@ int main()
 	for (int stepcount = 1; stepcount <= steps; stepcount++)
 	{
 		int r; 
-		r = rand() % int (partnum) + 1; //âûáðàëè ÷àñòèöó
+		r = rand() % int (partnum) + 1; //определение частицы для прыжка
 		
 
 		double Xcoorrem, Ycoorrem, Zcoorrem;
-		Xcoorrem = Xcoor[r]; Ycoorrem = Ycoor[r]; Zcoorrem = Zcoor[r]; //çàïîìíèëè ïîëîæåíèå ÷àñòèöû
+		Xcoorrem = Xcoor[r]; Ycoorrem = Ycoor[r]; Zcoorrem = Zcoor[r]; //запоминание положения для возврата в случае отказа от прыжка
 		
 		Xcoor[r] = jump(Xcoor[r], dcoor, length);
-		Ycoor[r] = jump(Ycoor[r], dcoor, length); //ïðûæîê ÷àñòèöåé
+		Ycoor[r] = jump(Ycoor[r], dcoor, length); //ïпрыжок частицей
 		Zcoor[r] = jump(Zcoor[r], dcoor, length);
 		
-		bool t=true; //ôëàã ïðèíÿòèÿ øàãà
+		bool t=true; //флаг принятия шага
 		
-		for (int k = 1; k <= partnum; k++) //ïðîâåðêà óäàë¸ííîñòè äðóãèõ ÷àñòèö
+		for (int k = 1; k <= partnum; k++) //проверка частиц на соприкосновение
 		{	
-			//cout << "step=" << stepcount << " part1=" << r << " part2=" << k << endl;
+		
 			if (k == r)
 			{
 				t = true; 
@@ -119,16 +118,14 @@ int main()
 			{
 				t = distcheck(Xcoor[k], Xcoor[r], Ycoor[k], Ycoor[r], Zcoor[k], Zcoor[r], molrad, length); 
 			}
-			//cout << t << endl;
 
 			if (t == false)
-			{
-				//cout << "OOOOPS!" << endl << endl << endl; 
+			{ 
 				break;
 			}
 		}
 
-		if (t == false) //ïðèíÿòèå èëè íåïðèíÿòèå øàãà
+		if (t == false) //принятие или откат шага
 		{
 			badsteps = badsteps + 1;
 			Xcoor[r] = Xcoorrem;
@@ -136,7 +133,7 @@ int main()
 			Zcoor[r] = Zcoorrem;
 		}
 		
-		if ((stepcount % 125) == 0)
+		if ((stepcount % 125) == 0) //вывод в файл положений
 		{
 			fout << partnum << endl;
 			fout << "STEP=" << stepcount << endl;
