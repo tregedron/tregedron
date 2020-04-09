@@ -5,9 +5,7 @@
 #include <ctime>
 using namespace std;
 
-//проверка на энергию
-//график энергии, средняя. g(r). должна быть глаже чем твёрдые.
-double* read(char x[10])
+double* read(char x[10]) //функция для прочтения конфигурационного файла
 {
 	double conf[5];
 	ifstream fin(x);
@@ -16,7 +14,7 @@ double* read(char x[10])
 	return conf;
 }
 
-double dist(double x1, double x2, double y1, double y2, double z1, double z2, double length)
+double dist(double x1, double x2, double y1, double y2, double z1, double z2, double length) //функция расчёта дистанции между частицами методом наиближайшего образа
 {
 	double r;
 	double delta_x = abs(x2 - x1), delta_y = abs(y2 - y1), delta_z = abs(z2 - z1);
@@ -36,7 +34,7 @@ double dist(double x1, double x2, double y1, double y2, double z1, double z2, do
 	return (r);
 }
 
-double jump(double coor, double dcoor, double length)
+double jump(double coor, double dcoor, double length) // функция прыжка для выбранной частицы (для покоординатное использование)
 {
 	coor = coor + (rand() * 2.0 / RAND_MAX) * dcoor - dcoor;
 	if (coor >= length)
@@ -53,14 +51,14 @@ double jump(double coor, double dcoor, double length)
 	return (coor);
 }
 
-double U(double r, double epsilon_T)
+double U(double r, double epsilon_T) //расчёт энергии между 2-мя частицами
 {
 	double t = 1 / r;
 	double U = 4 * epsilon_T* (pow(t, 12) - pow(t, 6));
 	return (U);
 }
 
-bool jumpcheck(double dE)
+bool jumpcheck(double dE) //проверка прыжка на подтверждение (Если энергия новой конфигурации меньше, то прыжок гарантированно принят, иначе считаем вероятность и кидаем случайное число для принития или непринятия)
 {
 	double pjump; bool t;
 	pjump = exp(-dE);
@@ -106,16 +104,16 @@ int main()
 	
 	double griddist = length / (n);
 
-	for (int i = 0; i < partnum; i++)
+	for (int i = 0; i < partnum; i++) //расстановка по начальной сетке
 	{
 		Xcoor[i] = griddist * ((i % n));
 		Ycoor[i] = griddist * (((int)(i / n)) % n);
 		Zcoor[i] = griddist * ((int)(i / (n * n)) % n);
 	}
 
-	ofstream Eout;
+	ofstream Eout; //файл энергий
 	Eout.open("E-1.txt");
-	ofstream fout;
+	ofstream fout; //файл положений
 	fout.open("6-12-1.XMOL");
 	fout << partnum << endl;
 	fout << "STEP=" << 0 << endl;
@@ -124,7 +122,7 @@ int main()
 		fout << "Ar " << Xcoor[i] << " " << Ycoor[i] << " " << Zcoor[i] << endl;
 	}
 
-	for (int i=0; i<partnum; i++)
+	for (int i=0; i<partnum; i++) //расчёт суммарной энергии начальной конфигурации
 	{
 		for (int j = i + 1; j < partnum; j++)
 		{
@@ -150,7 +148,7 @@ int main()
 
 		bool t = true; //флаг принятия шага
 		
-		double dEsum = 0;
+		double dEsum = 0; //измениение энергии от положения к положению
 		for (int k = 0; k < partnum; k++)
 		{
 			if (k != l)
@@ -180,7 +178,7 @@ int main()
 
 
 		if 
-			(((stepcount+1) % 1000) == 1) //вывод в файл положений
+			(((stepcount+1) % 1000) == 1) //вывод в файл положений раз в 1000 шагов
 		{
 			fout << partnum << endl;
 			fout << "STEP=" << stepcount+1 << endl;
@@ -191,12 +189,12 @@ int main()
 			}
 		} 
 
-		if (stepcount % 10000 == 0)
+		if (stepcount % 10000 == 0) //вывод шага для удобства пользования
 		{
 			cout << stepcount << endl;
 		}
 
-		if (stepcount % 2500 == 0) // проверка суммы
+		if (stepcount % 2500 == 0) // перепроверка суммы
 		{
 			double Esumcheck = 0; double otn = 0;
 			for (int i = 0; i < partnum; i++)
